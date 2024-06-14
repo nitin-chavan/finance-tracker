@@ -1,0 +1,98 @@
+
+<h2 class="text-danger mt-2">Transaction Tracker</h2>
+<hr>
+<button type="button" class="btn btn-primary m-5" (click)="openModal(addTransactionModal)">Add Transaction</button>
+<!-- <button type="button" class="btn btn-primary m-5" (click)="isShowSummary = true">Show Summary</button> -->
+
+<ng-template #addTransactionModal>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Add Transaction</h4>
+        <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+            <span aria-hidden="true" class="visually-hidden">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="transactionForm"
+            (ngSubmit)="isUpdate?updateTransaction(transactionForm.value, updateIndex): onSubmit()"
+            class="w-50 mx-auto">
+
+            <div class="form-floating mb-3">
+                <input type="number" class="form-control" id="floatingInput" formControlName="amount">
+                <label for="floatingInput">Amount</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingDesc" formControlName="description">
+                <label for="floatingDesc">Description</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="date" class="form-control" id="floatingdate" formControlName="date">
+                <label for="floatingdate">Date</label>
+            </div>
+
+            <div class="form-floating">
+                <select class="form-select" id="floatingSelect" formControlName="type"
+                    aria-label="Floating label select example">
+                    <option selected>choose type</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+                <label for="floatingSelect">Type</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3"
+                [disabled]="transactionForm.invalid">{{isUpdate?'Update':'Add'}}</button>
+        </form>
+    </div>
+</ng-template>
+
+
+<!-- <a routerLink="/transaction-summary">Go to Lazy Module</a>
+<router-outlet></router-outlet> -->
+
+@if (isShowSummary && transactions.length>0) {
+<div class="container">
+    <h3>Recent Transactions</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Transaction Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Date</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (transaction of transactions; track $index) {
+            <tr>
+
+                <td>
+                    {{transaction.type}}
+                </td>
+                <td>{{transaction.amount}}</td>
+                <td>{{transaction.date}}</td>
+                <td>
+                    <button type="button" (click)="openModal(addTransactionModal, transaction,$index)"
+                        class="btn btn-sm text-success">Update</button>
+                </td>
+                <td>
+                    <button type="button" (click)="deleteTransaction(transaction,$index)"
+                        class="btn btn-sm text-danger">Delete</button>
+
+                </td>
+            </tr>
+            }
+
+        </tbody>
+    </table>
+    <hr>
+    <h3> Transaction Summary</h3>
+
+    <ul class="list-group">
+        <li class="list-group-item">Total Income = {{totalIncome}}</li>
+        <li class="list-group-item">Total Expense = {{totalExpense}}</li>
+        <li class="list-group-item">Total Balance = {{balance}}</li>
+    </ul>
+</div>
+}
